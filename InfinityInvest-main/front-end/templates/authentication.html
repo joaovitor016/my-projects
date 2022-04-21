@@ -1,0 +1,65 @@
+{% load static from staticfiles %}
+<!--=====================================================
+* Argon Dashboard - v1.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+* Copyright 2019 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md)
+
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Infinity Invest</title>
+    <!-- Favicon -->
+    <link href="{% static 'core/img/favicon.png' %}" rel="icon" type="image/png">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">
+    <!-- Icons -->
+    <link href="{% static 'assets/js/plugins/nucleo/css/nucleo.css' %}" rel="stylesheet"/>
+    <link href="{% static 'assets/js/plugins/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet"/>
+    <!-- CSS Files -->
+    <link href="{% static 'assets/css/argon-dashboard.css' %}?v=3.3" rel="stylesheet"/>
+</head>
+
+<body class="bg-default">
+<div class="main-content">
+    {% block code %}
+
+    {% endblock %}
+</div>
+<!--   Core   -->
+<script src="{% static 'assets/js/plugins/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.10/jquery.mask.js"></script>
+<script src="{% static 'core/js/required.js' %}"></script>
+<script src="{% static 'core/js/filter_table.js' %}"></script>
+<!--   Optional JS   -->
+<script src="{% static 'assets/js/plugins/chart.js/dist/Chart.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/chart.js/dist/Chart.extension.js' %}"></script>
+<script src="{% static 'assets/js/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/bootstrap-datepicker/dist/locales/bootstrap-datepicker.pt-BR.min.js' %}"></script>
+<!--   Argon JS   -->
+<script src="{% static 'assets/js/argon-dashboard.min.js' %}"></script>
+<script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+{% block js %}
+{% endblock %}
+<script>
+    window.TrackJS &&
+    TrackJS.install({
+        token: "ee6fab19c5a04ac1a32a645abde4613a",
+        application: "argon-dashboard-free"
+    });
+</script>
+</body>
+
+</html>

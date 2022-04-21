@@ -1,0 +1,103 @@
+{% extends 'index.html' %}
+{% load static from staticfiles %}
+{% block brand %}
+    <form class="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
+        <div class="form-group mb-0">
+            <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                </div>
+                <input id="search" class="form-control" placeholder="Buscar usuário" type="text">
+            </div>
+        </div>
+    </form>
+{% endblock %}
+{% block code %}{% csrf_token %}
+    <div class="row">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-header border-0">
+                    <div class="row align-items-center mb-0">
+                        <div class="col-8">
+                            <h3 class="mb-0">Usuários cadastrados - Infinity Invest</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Nome</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Celular</th>
+                            <th scope="col">CPF</th>
+                            <th scope="col">Data de Nacimento</th>
+                            <th scope="col">Funcionário Infinity</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tableCustomer">
+                        {% for data in serializer %}
+                            <tr>
+                                <th scope="row">
+                                    <span class="mb-0 text-sm">{{ data.user_data.first_name }} {{ data.user_data.last_name }}</span>
+                                </th>
+                                <td>{{ data.user_data.email }}</td>
+                                <td id="phone-{{ data.pk }}">{{ data.phone }}</td>
+                                <td id="cpf-{{ data.pk }}">{{ data.cpf }}</td>
+                                <td>{{ data.birthday }}</td>
+                                <td>
+                                    <label class="custom-toggle" id="staff_toggle">
+                                        <input type="checkbox" checked id="staff-{{ data.user_data.pk }}"
+                                               onchange="change_staff({{ data.user_data.pk }}, {{ data.pk }})">
+                                        <span class="custom-toggle-slider rounded-circle" data-label-off="No"
+                                              data-label-on="Yes"></span>
+                                    </label>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+        function change_staff(id, personal_id) {
+            $.ajax({
+                type: "PUT",
+                url: "{% url 'customers_list'  %}",
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                data: JSON.stringify({
+                    "user_id": id,
+                    "is_staff": $(`#staff-${id}`).is(':checked').toString().toLowerCase(),
+                    "personal_id": personal_id
+                }),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    "X-CSRFToken": "{{ csrf_token }}"
+                }
+            });
+        }
+
+        function load_user_data() {
+            let validate_checked = "";
+            {% for data in serializer %}
+                validate_checked = "{{ data.user_data.is_staff }}".toLowerCase() === "true";
+                $(`#staff-${"{{ data.user_data.pk }}"}`).prop('checked', validate_checked);
+                $(`#phone-${"{{ data.pk }}"}`).mask("(99) 99999-9999", {removeMaskOnSubmit: true});
+                $(`#cpf-${"{{ data.pk }}"}`).mask("999.999.999-99", {removeMaskOnSubmit: true});
+            {% endfor %}
+        }
+
+        $(document).ready(function () {
+            load_user_data();
+            $("#search").on("keyup", function () {
+                filter("#tableCustomer tr", $(this).val().toLowerCase());
+            });
+        });
+    </script>
+{% endblock %}

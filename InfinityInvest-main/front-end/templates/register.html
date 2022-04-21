@@ -1,0 +1,198 @@
+{% extends 'authentication.html' %}
+{% load static from staticfiles %}
+{% block code %}
+    {% csrf_token %}
+    <div class="container-fluid mt-8">
+        <div class="row">
+            <div class="col-xl-8 order-xl-1 center">
+                <div id="block_error">
+                </div>
+                {% if erro %}
+                    <div class="alert alert-danger alert-dismissible fade show" id="div_error" role="alert">
+                        <span class="alert-inner--text" id="span_error">{{ erro }}</span>
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                {% endif %}
+                <div class="card bg-secondary shadow">
+                    <div class="card-header bg-white border-0">
+                        <div class="row align-items-center">
+                            <div class="col-8">
+                                <h3 class="mb-0">Infinity Invest</h3>
+                            </div>
+                            <div class="col-4 text-right">
+                                <a href="javascript:{}" id="save"
+                                   class="btn btn-sm btn-primary">Registrar-se</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" id="id_user" name="id_user" value="{{ serializer.user_data.pk }}">
+                        <input type="hidden" id="id_personal" name="id_personal" value="{{ serializer.pk }}">
+                        <!-- PersonalData -->
+                        <h6 class="heading-small text-muted mb-4">Dados Pessoais</h6>
+                        <div class="pl-lg-4">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="first_name">Nome</label>
+                                        <input type="text" id="first_name" name="first_name"
+                                               class="form-control form-control-alternative" placeholder="Nome"
+                                               required value="{{ serializer.user_data.first_name }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="last_name">Sobrenome</label>
+                                        <input type="text" id="last_name" name="last_name"
+                                               class="form-control form-control-alternative" placeholder="Sobrenome"
+                                               required value="{{ serializer.user_data.last_name }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="email">Email</label>
+                                        <input type="email" id="email" name="email" required
+                                               class="form-control form-control-alternative"
+                                               placeholder="Email" value="{{ serializer.user_data.email }}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="cpf">CPF</label>
+                                        <input type="text" id="cpf"
+                                               class="form-control form-control-alternative" placeholder="CPF" required
+                                               value="{{ serializer.cpf }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="phone">Celular</label>
+                                        <input type="text" id="phone"
+                                               class="form-control form-control-alternative"
+                                               placeholder="Celular" required
+                                               name="phone" required value="{{ serializer.phone }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group">
+                                        <label class="form-control-label" for="birthday">Data de
+                                            nascimento</label>
+                                        <input type="text" id="birthday" name="birthday"
+                                               class="form-control datepicker"
+                                               placeholder="Data de nacimento" required
+                                               data-date-format="dd/mm/yyyy"
+                                               value="{{ serializer.birthday }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="custom-h-61vh"></div>
+    <div class="custom-h-61vh"></div>
+    <div class="custom-h-61vh"></div>
+    <footer class="py-5">
+        <div class="container">
+            <div class="row align-items-center justify-content-xl-between">
+                <div class="col-xl-3">
+                    <div class="copyright text-center text-xl-left text-muted">
+                        &copy; 2018 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1"
+                                       target="_blank">Creative Tim</a>
+                    </div>
+                </div>
+                <div class="col-xl-3">
+                    <div class="copyright text-center text-xl-left text-muted">
+                        &copy; Infinity Invest.
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <ul class="nav nav-footer justify-content-center justify-content-xl-end">
+                        <li class="nav-item">
+                            <a href="https://www.creative-tim.com" class="nav-link" target="_blank">Creative Tim</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://www.creative-tim.com/presentation" class="nav-link" target="_blank">About
+                                Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="https://github.com/creativetimofficial/argon-dashboard/blob/master/LICENSE.md"
+                               class="nav-link" target="_blank">MIT License</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'core/js/clients.js' %}?v=1.0"></script>
+    <script>
+        function client_ajax(e) {
+            e.preventDefault();
+            let nome = `${$("#first_name").val()} ${$("#last_name").val()}`;
+            let cpf = $("#cpf").val();
+            let msg = `Ocorreu um erro para cadastrar ${nome}. Informe todos os campos de forma correta ou o cpf ${cpf} já esta cadastrado.`;
+            if (validate_required() === true) {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'register'  %}",
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    data: JSON.stringify({
+                        "cpf": $("#cpf").val().replace(/\D/g, ""),
+                        "birthday": $("#birthday").val(),
+                        "phone": $("#phone").val().replace(/\D/g, ""),
+                        "user_data": {
+                            "username": $("#email").val(),
+                            "email": $("#email").val(),
+                            "first_name": $("#first_name").val(),
+                            "last_name": $("#last_name").val()
+                        }
+                    }),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    success: function () {
+                        window.location = "{% url "login" %}"
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $("#div_error").removeAttr("hidden");
+                        if (!$("div#div_error").length) {
+                            $('<div class="alert alert-danger alert-dismissible fade show" id="div_error"' +
+                                ' role="alert"><span class="alert-inner--text" id="span_error"></span><button ' +
+                                'type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                '<span aria-hidden="true">&times;</span></button></div>').appendTo('#block_error');
+                        }
+                        $("#span_error").text(msg);
+                    }
+                });
+            } else {
+                $("#div_error").removeAttr("hidden");
+                msg = "Alguns campos obrigatórios não foram preenchidos. "
+                if (!$("div#div_error").length) {
+                    $('<div class="alert alert-danger alert-dismissible fade show" id="div_error"' +
+                        ' role="alert"><span class="alert-inner--text" id="span_error"></span><button ' +
+                        'type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span></button></div>').appendTo('#block_error');
+                }
+                $("#span_error").text(msg);
+            }
+        }
+
+        $('#save').click(function (e) {
+            client_ajax(e);
+        });
+
+    </script>
+{% endblock %}

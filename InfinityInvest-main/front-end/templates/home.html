@@ -1,0 +1,419 @@
+{% extends 'index.html' %}
+{% load static from staticfiles %}
+
+{% block code %}
+    {% csrf_token %}
+    <div class="row">
+        <div class="col-xl-8 order-xl-1 center">
+            <div id="block_error">
+            </div>
+            {% if erro %}
+                <div class="alert alert-danger alert-dismissible fade show" id="div_error" role="alert">
+                    <span class="alert-inner--text" id="span_error">{{ erro }}</span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                </div>
+            {% endif %}
+            <div class="card bg-secondary shadow">
+                <div class="card-header bg-white border-0">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0">Infinity Invest</h3>
+                        </div>
+                        <div class="col-4 text-right">
+                            <a href="javascript:{}" id="save"
+                               class="btn btn-sm btn-primary">{% if method_type == "PUT" %}Atualizar{% else %}
+                                Salvar{% endif %}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <input type="hidden" id="id_user" name="id_user" value="{{ serializer.user_data.pk }}">
+                    <input type="hidden" id="id_personal" name="id_personal" value="{{ serializer.pk }}">
+                    <!-- PersonalData -->
+                    <h6 class="heading-small text-muted mb-4">Dados Pessoais</h6>
+                    <div class="pl-lg-4">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="first_name">Nome</label>
+                                    <input type="text" id="first_name" name="first_name"
+                                           class="form-control form-control-alternative" placeholder="Nome"
+                                           required value="{{ serializer.user_data.first_name }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="last_name">Sobrenome</label>
+                                    <input type="text" id="last_name" name="last_name"
+                                           class="form-control form-control-alternative" placeholder="Sobrenome"
+                                           required value="{{ serializer.user_data.last_name }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="email">Email</label>
+                                    <input type="email" id="email" name="email" required
+                                           class="form-control form-control-alternative"
+                                           placeholder="Email" value="{{ serializer.user_data.email }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="cpf">CPF</label>
+                                    <input type="text" id="cpf"
+                                           class="form-control form-control-alternative" placeholder="CPF" required
+                                           value="{{ serializer.cpf }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="phone">Celular</label>
+                                    <input type="text" id="phone"
+                                           class="form-control form-control-alternative"
+                                           placeholder="Celular" required
+                                           name="phone" required value="{{ serializer.phone }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="birthday">Data de
+                                        nascimento</label>
+                                    <input type="text" id="birthday" name="birthday"
+                                           class="form-control datepicker"
+                                           placeholder="Data de nacimento" required
+                                           data-date-format="dd/mm/yyyy"
+                                           value="{{ serializer.birthday }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4"/>
+                    <!-- ProfessionalData -->
+                    <h6 class="heading-small text-muted mb-4">Dados Profissionais</h6>
+                    <div class="pl-lg-4">
+                        <div class="row">
+                            <div class="col-md-auto">
+                                <label class="form-control-label" for="working_toggle">Você trabalha atualmente?</label>
+                            </div>
+                            <div class="col-md-auto">
+                                <label class="custom-toggle" id="working_toggle">
+                                    <input type="checkbox" checked id="working" onchange="change_professional_data()">
+                                    <span class="custom-toggle-slider rounded-circle" data-label-off="No"
+                                          data-label-on="Yes"></span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="company_name">Nome da empresa</label>
+                                    <input id="company_name" class="form-control form-control-alternative"
+                                           placeholder="Nome da Empresa" type="text" name="company_name"
+                                           value="{{ serializer.professional_data.company_name }}">
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="address">Endereço Completo</label>
+                                    <input id="address" class="form-control form-control-alternative"
+                                           placeholder="Endereço" type="text" name="address"
+                                           value="{{ serializer.professional_data.address }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="city">Cidade</label>
+                                    <input type="text" id="city" name="city"
+                                           class="form-control form-control-alternative" placeholder="Cidade"
+                                           value="{{ serializer.professional_data.city }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="zip_code">CEP</label>
+                                    <input type="text" id="zip_code" pattern="[0-9]" placeholder="CEP"
+                                           class="form-control form-control-alternative"
+                                           value="{{ serializer.professional_data.zip_code }}">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="number">Número</label>
+                                    <input id="number" class="form-control form-control-alternative"
+                                           type="number" name="number"
+                                           value="{{ serializer.professional_data.number }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="complement">Complemento</label>
+                                    <input id="complement" class="form-control form-control-alternative"
+                                           name="complement" placeholder="Complemento" type="text"
+                                           value="{{ serializer.professional_data.complement }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="occupation">Qual sua Profissão?</label>
+                                    <input type="text" id="occupation" name="occupation"
+                                           class="form-control form-control-alternative"
+                                           placeholder="Qual sua Profissão?"
+                                           value="{{ serializer.professional_data.occupation }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label class="form-control-label" for="role">Qual seu cargo ocupado?</label>
+                                    <input type="text" id="role" name="role"
+                                           class="form-control form-control-alternative"
+                                           placeholder="Qual seu cargo ocupado?"
+                                           value="{{ serializer.professional_data.role }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-4"/>
+                    <!-- FinancialData -->
+                    <h6 class="heading-small text-muted mb-4">Dados bancários e financeiros</h6>
+                    <div class="pl-lg-4">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label for="total_monthly_income">Renda mensal total</label>
+                                    <input id="total_monthly_income" class="form-control form-control-alternative"
+                                           step="0.01" min="0"
+                                           placeholder="Renda mensal total" type="number" name="total_monthly_income"
+                                           required value="{{ serializer.financial_data.total_monthly_income }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="form-group">
+                                    <label for="current_account">Conta Corrente + poupança</label>
+                                    <input id="current_account" class="form-control form-control-alternative"
+                                           placeholder="Conta Corrente + poupança" type="text" name="current_account"
+                                           value="{{ serializer.financial_data.current_account }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label for="fixed_income">Renda fixa</label>
+                                    <input id="fixed_income" class="form-control form-control-alternative"
+                                           step="0.01" min="0" required
+                                           placeholder="Renda fixa" type="number" name="fixed_income"
+                                           value="{{ serializer.financial_data.fixed_income }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label for="variable_income">Renda variável</label>
+                                    <input id="variable_income" class="form-control form-control-alternative"
+                                           step="0.01" min="0" required
+                                           placeholder="Renda variável" type="number" name="variable_income"
+                                           value="{{ serializer.financial_data.variable_income }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="form-group">
+                                    <label for="account_number">Número da conta</label>
+                                    <input id="account_number" class="form-control form-control-alternative"
+                                           placeholder="Número da conta" type="number" min="0" name="account_number"
+                                           required value="{{ serializer.financial_data.account_number }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label for="agency">Agência</label>
+                                    <input id="agency" class="form-control form-control-alternative"
+                                           placeholder="Agência" type="number" min="0" name="agency" required
+                                           value="{{ serializer.financial_data.agency }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label for="bank">Código Banco</label>
+                                    <input id="bank" class="form-control form-control-alternative"
+                                           placeholder="Código Banco" type="number" min="0" name="bank" required
+                                           value="{{ serializer.financial_data.bank }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                <div class="form-group">
+                                    <label for="digit">Digito</label>
+                                    <input id="digit" class="form-control form-control-alternative"
+                                           placeholder="Digito" type="number" min="0" name="digit" required
+                                           value="{{ serializer.financial_data.digit }}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- UserProfile -->
+                    <h6 class="heading-small text-muted mb-4">Dados bancários e financeiros</h6>
+                    <div class="pl-lg-4">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="chattel">Bens imóveis</label>
+                                    <input id="chattel" class="form-control form-control-alternative"
+                                           placeholder="Bens imóveis" type="number" name="chattel"
+                                           step="0.01" min="0" required
+                                           value="{{ serializer.profile_data.chattel }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="movables">Bens móveis</label>
+                                    <input id="movables" class="form-control form-control-alternative"
+                                           step="0.01" min="0"
+                                           placeholder="Bens móveis" type="number" name="movables" required
+                                           value="{{ serializer.profile_data.movables }}">
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <label for="profile_type">Qual seu perfil de investidor</label>
+                                    <select class="form-control" id="profile_type">
+                                        <option value="conservador">Conservador</option>
+                                        <option value="moderado">Moderado</option>
+                                        <option value="agressivo">Agressivo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'core/js/clients.js' %}?v=1.0"></script>
+    <script>
+        function client_ajax(e) {
+            e.preventDefault();
+            let nome = `${$("#first_name").val()} ${$("#last_name").val()}`;
+            let cpf = $("#cpf").val();
+            let msg = `Ocorreu um erro para cadastrar ${nome}. Informe todos os campos de forma correta ou o cpf ${cpf} já esta cadastrado.`;
+            if (validate_required() === true) {
+                $.ajax({
+                    type: "{{ method_type }}",
+                    url: "{% url 'home'  %}",
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    data: JSON.stringify({
+                        "cpf": $("#cpf").val().replace(/\D/g, ""),
+                        "birthday": $("#birthday").val(),
+                        "phone": $("#phone").val().replace(/\D/g, ""),
+                        "user_data": {
+                            "username": $("#email").val(),
+                            "email": $("#email").val(),
+                            "first_name": $("#first_name").val(),
+                            "last_name": $("#last_name").val()
+                        },
+                        "professional_data": {
+                            "working": $("#working").is(':checked').toString().toLowerCase(),
+                            "company_name": $("#company_name").val(),
+                            "zip_code": $("#zip_code").val().replace(/\D/g, ""),
+                            "city": $("#city").val(),
+                            "address": $("#address").val(),
+                            "number": $("#number").val() === "" ? 0 : $("#number").val(),
+                            "complement": $("#complement").val(),
+                            "occupation": $("#occupation").val(),
+                            "role": $("#role").val()
+                        },
+                        "financial_data": {
+                            "total_monthly_income": $("#total_monthly_income").val(),
+                            "current_account": $("#current_account").val(),
+                            "fixed_income": $("#fixed_income").val(),
+                            "variable_income": $("#variable_income").val(),
+                            "account_number": $("#account_number").val(),
+                            "agency": $("#agency").val(),
+                            "bank": $("#bank").val(),
+                            "digit": $("#digit").val()
+                        },
+                        "profile_data": {
+                            "chattel": $("#chattel").val(),
+                            "movables": $("#movables").val(),
+                            "profile_type": $("#profile_type").val()
+                        },
+                        "pk_fields": {
+                            "id_user": $("#id_user").val(),
+                            "id_personal": $("#id_personal").val()
+                        }
+                    }),
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    success: function () {
+                        window.location = "{% url "home" %}"
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        $("#div_error").removeAttr("hidden");
+                        if (!$("div#div_error").length) {
+                            $('<div class="alert alert-danger alert-dismissible fade show" id="div_error"' +
+                                ' role="alert"><span class="alert-inner--text" id="span_error"></span><button ' +
+                                'type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                                '<span aria-hidden="true">&times;</span></button></div>').appendTo('#block_error');
+                        }
+                        $("#span_error").text(msg);
+                    }
+                });
+            } else {
+                $("#div_error").removeAttr("hidden");
+                msg = "Alguns campos obrigatórios não foram preenchidos. "
+                if (!$("div#div_error").length) {
+                    $('<div class="alert alert-danger alert-dismissible fade show" id="div_error"' +
+                        ' role="alert"><span class="alert-inner--text" id="span_error"></span><button ' +
+                        'type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                        '<span aria-hidden="true">&times;</span></button></div>').appendTo('#block_error');
+                }
+                $("#span_error").text(msg);
+            }
+        }
+
+        $('#save').click(function (e) {
+            client_ajax(e);
+        });
+
+        function change_professional_data() {
+            /*
+            *  Manter os dados profissionais atualizados de acordo com a opção selecionada em "Você está trabalhando?"
+            */
+            let bool = $("#working").is(':checked').toString().toLowerCase() === "true";
+            let elements = ["#company_name", "#zip_code", "#city", "#address", "#number", "#complement", "#occupation", "#role"];
+            elements.forEach(item => {
+                $(item).prop('disabled', !bool).val("");
+                (item !== "#complement" && bool) ? $(item).prop("required", true) : $(item).prop("required", false);
+            });
+            if (bool){
+                /*
+                *  Caso setar que está trabalhando, irá setar o valor já cadastrado.
+                */
+                {% for key, value in serializer.professional_data.items %}
+                    $(`#${"{{ key }}"}`).val("{{ value }}");
+                {% endfor %}
+            }
+        }
+
+        $(document).ready(function () {
+            // Carregando dados personalizados.
+            let validate_checked = "{{ serializer.professional_data.working }}".toLowerCase() === "true";
+            $("#working").prop('checked', validate_checked);
+            $("#profile_type").val("{{ serializer.profile_data.profile_type }}").change();
+            change_professional_data();
+        });
+
+    </script>
+{% endblock %}
